@@ -40,30 +40,34 @@ namespace Greeting
         {
             if (names.Length == 2)
             {
-                if (AreMoreNamesInString(names))
-                {
-                    var namesInAString = names.Where(x => x.Contains(",")).Select(x => x.Split(","));
-                    var singleNames = string.Join(", ", names.Where(x => !x.Contains(",")));
-                    var namesInASTringNoLast = string.Join(",",namesInAString.SkipLast(1));
-                    var resMoreNameInAString = $"Hello, {string.Concat(singleNames,namesInASTringNoLast)}, {string.Join(", and", namesInAString.Last().Select(x => x))}.";
-
-                    return resMoreNameInAString;
-
-                }
-                else
-                {
-                    return $"Hello, {names[0]} and {names[1]}.";
-                }
-                
+                return $"Hello, {names[0]} and {names[1]}.";
             }
-            else
+            else if (AreMoreNamesInQuotes(names))
             {
+               var namesNoQuotes = string.Join(",", names.Where(x => !x.Contains("\"")));
+               var namesQuotes = string.Join(",", names.Where(x => x.Contains("\"")).Select(x => string.Concat(x.Where(y => !y.Equals('\"')))));
+               var res = $"Hello, {namesNoQuotes} and {namesQuotes}.";
+
+               return res;
+             }
+             else if (AreCommaInString(names))
+             {
+                var namesInAString = names.Where(x => x.Contains(",")).Select(x => x.Split(","));
+                var singleNames = string.Join(", ", names.Where(x => !x.Contains(",")));
+                var namesInASTringNoLast = string.Join(",", namesInAString.SkipLast(1));
+                var resMoreNameInAString = $"Hello, {string.Concat(singleNames, namesInASTringNoLast)}, {string.Join(", and", namesInAString.Last().Select(x => x))}.";
+
+                return resMoreNameInAString;
+
+             }
+             else
+             {
                 var nameAggregate = names.SkipLast(1)
-                .Aggregate((prev, next) => $"{prev}, {next}");
+                                    .Aggregate((prev, next) => $"{prev}, {next}");
                 var res = $"Hello, {nameAggregate}, and {names.Last()}.";
 
                 return res;
-            }
+             }   
         }
 
         private string GreetWithShouting(params string[] names)
@@ -76,22 +80,14 @@ namespace Greeting
             return res;
         }
 
-        private bool AreMoreNamesInString(params string[] names)
+        private bool AreCommaInString(params string[] names)
         {
-            var res = false;
-            var namesInString = names.Select(x => x.Contains(","));
+            return names.Any(x => x.Contains(","));
+        }
 
-            if (namesInString != null)
-            {
-                res = true;
-            }
-            else
-            {
-                res = false;
-            }
-
-            return res;
+        private bool AreMoreNamesInQuotes(params string[] names)
+        {
+            return names.Any(x => x.Contains("\""));
         }
     }
 }
-

@@ -56,4 +56,10 @@ public class GreetingTest
     {
         Assert.Equal("Hello, Bob, Charlie, and Dianne.", _sut.GreetMain("Bob", "Charlie, Dianne"));
     }
+
+    [Fact]
+    public void ShouldGreetPersonWithInputDOubleQuotes()
+    {
+        Assert.Equal("Hello, Bob and Charlie, Dianne.", _sut.GreetMain("Bob", "\"Charlie, Dianne\""));
+    }
 }
